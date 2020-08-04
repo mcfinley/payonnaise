@@ -3,7 +3,7 @@ import { Paginate, Sort, Filter } from '../libs/utils'
 
 export type Account = {
   id: number
-  ownerId: number
+  profileId: number
   asset: string
   createdAt: Date
 }
@@ -12,47 +12,63 @@ export default {
   /**
    * Create an account
    */
-  create: async ({ asset, ownerId }: { asset: string, ownerId: number }) => {
-    return await db('accounts').insert({ asset, ownerId }).returning('*')
+  create: async ({ asset, profileId }: { asset: string, profileId: number }) => {
+    return await db('accounts').insert({ asset, profileId }).returning('*')
   },
+
   /**
    * List all accounts with sorting/pagination and filtering
    */
   list: async ({ paginate, sort, filter, count }: { paginate?: Paginate, sort?: Sort, filter?: Filter, count: boolean }) => {
     let query = (count ? db.count('id') : db.select('*'))
-      .from('accounts').where(db.raw('TRUE'))
+      .from('accounts').where({ deleted: false })
 
-    /**
-     * Filter accounts (only by asset for now)
-     */
+    if (count) {
+      if (sort || paginate) {
+        throw new Error('Sort/paginate and count should not go together')
+      }
+    }
+
     if (filter) {
       if (filter.asset) {
         query = query.andWhere({ asset: filter.asset })
       }
+
+      if (filter.profileId) {
+        query = query.andWhere({ profileId: filter.profileId })
+      }
     }
 
-    /**
-     * Sort accounts
-     */
     if (sort) {
-      if (count) {
-        throw new Error('count and sort should not go together')
-      }
-
       query = query.orderBy(sort.column, sort.direction)
     }
 
-    /**
-     * Paginate accounts
-     */
     if (paginate) {
-      if (count) {
-        throw new Error('count and paginate should not go together')
-      }
-
       query = query.offset(paginate.page * paginate.pageSize).limit(paginate.pageSize)
     }
 
     return await query
+  },
+
+  /**
+   * Get a specific account
+   */
+  get: async (query: { id: number, profileId?: number }) => {
+    return await db.select('*').from('accounts').where({ ...query, deleted: false })
+  },
+
+  /**
+   * Update a specific account
+   */
+  update: async (query: { id: number, profileId?: number }, body: Partial<Omit<Account, 'id' | 'createdAt'>>) => {
+    /* We actually should not be able to update that. */
+  },
+
+  /**
+   * Delete a specific account
+   */
+  delete: async (query: { id: number, profileId?: number }) => {
+    /* TODO remove transfers ? */
+    return await db('accounts').where(query).update({ deleted: true })
   },
 }
