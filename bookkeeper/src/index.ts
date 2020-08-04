@@ -8,10 +8,9 @@ import db from './libs/database'
 import logger from './libs/logger'
 import { routeHandler } from './libs/utils'
 
-import accounts from './routes/accounts'
-// import restaurants from './routes/restaurants'
-// import users from './routes/users'
-// import reviews from './routes/reviews'
+// import accounts from './routes/accounts'
+// import users from './routes/users'\
+import api from './routes'
 
 const app = express()
 
@@ -38,18 +37,18 @@ app.use((req, res, next) => {
   next()
 })
 
-// app.get('/health', routeHandler(async (req, res) => {
-//   db.query(`SELECT 1+1 as test`).then((data) => {
-//     res.sendStatus(200)
-//   }).catch((err) => {
-//     res.sendStatus(500)
-//   })
-// }))
+app.get('/health', routeHandler((req, res) => {
+  db.raw(`SELECT 1+1 as test`).then((data) => {
+    res.sendStatus(200)
+  }).catch((err) => {
+    res.sendStatus(500)
+  })
+}))
 
-app.use('/accounts', accounts)
-// app.use('/users', users)
-// app.use('/restaurants', restaurants)
-// app.use('/reviews', reviews)
+/**
+ * Main API route handler attach
+ */
+app.use('/api/v1', api)
 
 /**
  * Simple error middleware
