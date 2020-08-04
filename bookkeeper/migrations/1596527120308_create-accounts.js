@@ -6,8 +6,9 @@ exports.up = pgm => {
   pgm.createTable('accounts', {
     id: 'id',
     asset: { type: 'string', notNull: true },
-    ownerId: { type: 'integer', notNull: true, references: '"users"' },
+    profileId: { type: 'integer', notNull: true, references: '"profiles"' },
     createdAt: { type: 'timestamp', notNull: true, default: pgm.func('current_timestamp') },
+    deleted: { type: 'boolean', notNull: true, default: false },
   })
 };
 
