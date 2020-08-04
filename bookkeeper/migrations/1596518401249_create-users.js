@@ -3,10 +3,8 @@
 exports.shorthands = undefined;
 
 exports.up = pgm => {
-  pgm.createTable('accounts', {
+  pgm.createTable('users', {
     id: 'id',
-    asset: { type: 'string', notNull: true },
-    ownerId: { type: 'integer', notNull: true, references: '"users"' },
     createdAt: { type: 'timestamp', notNull: true, default: pgm.func('current_timestamp') },
   })
 };
