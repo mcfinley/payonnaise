@@ -27,3 +27,10 @@ export const routeHandler = (f) => (req, res, next) => {
     next(e)
   }
 }
+
+/**
+ * Paginate/Filter/Sort types
+ */
+export type Paginate = { page: number, pageSize: number }
+export type Sort = { column: string, direction: 'asc' | 'desc' }
+export type Filter = { [k: string]: any }
