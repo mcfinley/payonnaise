@@ -1,0 +1,11 @@
+version: '3'
+services:
+  accounts_ledger:
+    image: postgres
+    restart: always
+    ports:
+      - ${ACCOUNTS_LEDGER_PORT}:5432
+    environment:
+      POSTGRES_PASSWORD: "${ACCOUNTS_LEDGER_PASSWORD}"
+      POSTGRES_DB: "${ACCOUNTS_LEDGER_DB}"
+      POSTGRES_USER: "${ACCOUNTS_LEDGER_USER}"

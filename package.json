@@ -1,0 +1,16 @@
+{
+  "name": "payonnaise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "up": "source .env && docker-compose up",
+    "down": "docker-compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mcfinley/payonnaise.git"
+  },
+  "author": "Alexander Churbakov",
+  "license": "MIT"
+}
