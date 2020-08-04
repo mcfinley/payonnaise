@@ -3,7 +3,7 @@ import _ from 'lodash'
 
 import { routeHandler } from './libs/utils'
 import accounts from './controllers/accounts'
-import users from './controllers/users'
+import profiles from './controllers/profiles'
 
 const router = express.Router()
 
@@ -11,19 +11,19 @@ const router = express.Router()
  * Users routes
  */
 
-router.post('/users/', routeHandler(users.post))
-router.get('/users/', routeHandler(users.list))
-router.get('/users/:userId', routeHandler(users.get))
-router.put('/users/:userId', routeHandler(users.update))
-router.patch('/users/:userId', routeHandler(users.update))
-router.delete('/users/:userId', routeHandler(users.delete))
+router.post('/profiles/', routeHandler(profiles.post))
+router.get('/profiles/', routeHandler(profiles.list))
+router.get('/profiles/:profileId', routeHandler(profiles.get))
+router.put('/profiles/:profileId', routeHandler(profiles.update))
+router.patch('/profiles/:profileId', routeHandler(profiles.update))
+router.delete('/profiles/:profileId', routeHandler(profiles.delete))
 
-router.post('/users/:userId/accounts', routeHandler(accounts.post))
-router.get('/users/:userId/accounts', routeHandler(accounts.list))
-router.get('/users/:userId/accounts/:accountId', routeHandler(accounts.get))
-router.put('/users/:userId/accounts/:accountId', routeHandler(accounts.update))
-router.patch('/users/:userId/accounts/:accountId', routeHandler(accounts.update))
-router.delete('/users/:userId/accounts/:accountId', routeHandler(accounts.delete))
+router.post('/profiles/:profileId/accounts', routeHandler(accounts.post))
+router.get('/profiles/:profileId/accounts', routeHandler(accounts.list))
+router.get('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.get))
+router.put('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.update))
+router.patch('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.update))
+router.delete('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.delete))
 
 // router.post('/users/:userId/accounts/:accountId/transfers', routeHandler(accounts.post))
 // router.get('/users/:userId/accounts/:accountId/transfers', routeHandler(accounts.list))
