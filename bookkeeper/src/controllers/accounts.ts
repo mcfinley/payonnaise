@@ -51,7 +51,16 @@ export default {
     const accountId = Number(req.params.accountId)
     const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
 
-    res.json(await Accounts.get({ id: accountId, profileId }))
+    res.json(await Accounts.get(_.defined({ id: accountId, profileId: profileId })))
+  },
+
+  /**
+   * Get a specific account's balance
+   */
+  getBalance: async (req, res) => {
+    const accountId = Number(req.params.accountId)
+
+    res.json(await Accounts.getBalance({ id: accountId }))
   },
 
   /**
@@ -72,6 +81,6 @@ export default {
     const accountId = Number(req.params.accountId)
     const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
 
-    res.json(await Accounts.delete({ id: accountId, profileId }))
+    res.json(await Accounts.delete(_.defined({ id: accountId, profileId })))
   },
 }

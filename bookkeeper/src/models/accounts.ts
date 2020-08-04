@@ -58,6 +58,19 @@ export default {
   },
 
   /**
+   * Get balance for a specific account
+   */
+  getBalance: async ({ id }: { id: number }) => {
+    const fromTransfers = await db.select(['amount']).from('transfers').where({ fromAccountId: id })
+    const toTransfers = await db.select(['amount']).from('transfers').where({ toAccountId: id })
+
+    const amountSentFrom = fromTransfers.reduce((acc, { amount }) => acc + amount, 0)
+    const amountSentTo = toTransfers.reduce((acc, { amount }) => acc + amount, 0)
+
+    return amountSentTo - amountSentFrom
+  },
+
+  /**
    * Update a specific account
    */
   update: async (query: { id: number, profileId?: number }, body: Partial<Omit<Account, 'id' | 'createdAt'>>) => {

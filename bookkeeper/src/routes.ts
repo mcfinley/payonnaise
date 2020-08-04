@@ -4,6 +4,7 @@ import _ from 'lodash'
 import { routeHandler } from './libs/utils'
 import accounts from './controllers/accounts'
 import profiles from './controllers/profiles'
+import transfers from './controllers/transfers'
 
 const router = express.Router()
 
@@ -39,15 +40,23 @@ router.delete('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.
 router.post('/accounts', routeHandler(accounts.post))
 router.get('/accounts', routeHandler(accounts.list))
 router.get('/accounts/:accountId', routeHandler(accounts.get))
+router.get('/accounts/:accountId/balance', routeHandler(accounts.getBalance))
 router.put('/accounts/:accountId', routeHandler(accounts.update))
 router.patch('/accounts/:accountId', routeHandler(accounts.update))
 router.delete('/accounts/:accountId', routeHandler(accounts.delete))
 
 // router.post('/accounts/:accountId/transfers', routeHandler(accounts.post))
-// router.get('/accounts/:accountId/transfers', routeHandler(accounts.list))
+router.get('/accounts/:accountId/transfers', routeHandler(transfers.list))
 // router.get('/accounts/:accountId/transfers/:transferId', routeHandler(accounts.get))
 // router.put('/accounts/:accountId/transfers/:transferId', routeHandler(accounts.update))
 // router.patch('/accounts/:accountId/transfers/:transferId', routeHandler(accounts.update))
 // router.delete('/accounts/:accountId/transfers/:transferId', routeHandler(accounts.delete))
+
+/**
+ * Transfers routes
+ */
+
+router.post('/transfers', routeHandler(transfers.post))
+router.get('/transfers', routeHandler(transfers.list))
 
 export default router

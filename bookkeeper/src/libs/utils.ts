@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 /**
  * An error that when thrown is being parsed
  * correctly by express error middleware
@@ -34,3 +36,25 @@ export const routeHandler = (f) => (req, res, next) => {
 export type Paginate = { page: number, pageSize: number }
 export type Sort = { column: string, direction: 'asc' | 'desc' }
 export type Filter = { [k: string]: any }
+
+/**
+ * Add a `defined` helper to lodash
+ */
+_.mixin({
+  defined: (object) => _.omitBy(object, _.isUndefined),
+})
+
+// declare global {
+//   interface LoDashStatic {
+//     defined: any
+//   }
+// }
+
+declare module "lodash" {
+  interface LoDashStatic {
+    defined: any
+  }
+    // interface LoDashExplicitWrapper<TValue> {
+    //     swap(index1: number, index2: number): LoDashExplicitWrapper<TValue>;
+    // }
+}
