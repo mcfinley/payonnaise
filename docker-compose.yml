@@ -9,3 +9,15 @@ services:
       POSTGRES_PASSWORD: "${ACCOUNTS_LEDGER_PASSWORD}"
       POSTGRES_DB: "${ACCOUNTS_LEDGER_DB}"
       POSTGRES_USER: "${ACCOUNTS_LEDGER_USER}"
+  bookkeeper:
+    build:
+      context: ./bookkeeper
+      dockerfile: Dockerfile
+    environment:
+      - BOOKKEEPER_PORT=${BOOKKEEPER_PORT}
+    ports:
+      - ${BOOKKEEPER_PORT}:${BOOKKEEPER_PORT}
+    depends_on:
+      - accounts_ledger
+    volumes:
+      - ./.env:/app/.env

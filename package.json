@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "up": "source .env && docker-compose up",
+    "up": ". ./.env && docker-compose up",
     "down": "docker-compose down"
   },
   "repository": {

@@ -1,0 +1,39 @@
+{
+  "name": "bookkeeper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "migrate": ". ./.env && DATABASE_URL=postgres://${ACCOUNTS_LEDGER_USER}:${ACCOUNTS_LEDGER_PASSWORD}@${ACCOUNTS_LEDGER_HOST}:${ACCOUNTS_LEDGER_PORT}/${ACCOUNTS_LEDGER_DB} npx node-pg-migrate",
+    "seed": "NODE_ENV=development npx ts-node src/seed.ts",
+    "test": "NODE_ENV=test npm run build && NODE_ENV=test npx jest",
+    "dev": "NODE_ENV=development npx ts-node src/index.ts",
+    "start": "NODE_ENV=production npx tsc && npm run migrate up && node dist/index.js",
+    "postinstall": "[[ -f ../.env ]] && cp ../.env .env || true"
+  },
+  "author": "mcfinley",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.7",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/lodash": "^4.14.157",
+    "jest": "^26.1.0",
+    "pino-pretty": "^4.1.0",
+    "supertest": "^4.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "node-pg-migrate": "^5.3.0",
+    "pg": "^8.3.0",
+    "pino": "^6.4.1",
+    "sqlstring": "^2.3.2",
+    "uuid": "^8.2.0"
+  }
+}
