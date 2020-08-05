@@ -54,7 +54,7 @@ export default {
    * Get a specific account
    */
   get: async (query: { id: number, profileId?: number }) => {
-    return await db.select('*').from('accounts').where({ ...query, deleted: false })
+    return await db.select('*').from('accounts').where({ ...query, deleted: false }).then(([account]) => account)
   },
 
   /**
@@ -71,17 +71,9 @@ export default {
   },
 
   /**
-   * Update a specific account
-   */
-  update: async (query: { id: number, profileId?: number }, body: Partial<Omit<Account, 'id' | 'createdAt'>>) => {
-    /* We actually should not be able to update that. */
-  },
-
-  /**
    * Delete a specific account
    */
   delete: async (query: { id: number, profileId?: number }) => {
-    /* TODO remove transfers ? */
     return await db('accounts').where(query).update({ deleted: true })
   },
 }

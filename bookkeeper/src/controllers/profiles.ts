@@ -38,14 +38,6 @@ export default {
   },
 
   /**
-   * Update a profile entry
-   */
-  update: async (req, res) => {
-    /* There are no fields that can be updated */
-    res.sendStatus(200)
-  },
-
-  /**
    * Delete a profile entry
    */
   delete: async (req, res) => {
@@ -55,6 +47,10 @@ export default {
       throw new HttpError(400, 'Invalid ID')
     }
 
-    res.json(await Profiles.delete(profileId))
+    if (0 === await Profiles.delete(profileId)) {
+      throw new HttpError(404, 'Profile not found')
+    }
+
+    res.sendStatus(200)
   },
 }

@@ -19,12 +19,10 @@ export default {
    */
   list: async ({ paginate, sort, filter, count }: { paginate?: Paginate, sort?: Sort, filter?: Filter, count: boolean }) => {
     let query = (count ? db.count('id') : db.select('*'))
-      .from('profiles').where(db.raw('TRUE'))
+      .from('profiles').where({ deleted: false })
 
-    if (count) {
-      if (sort || paginate) {
-        throw new Error('Sort/paginate cannot be used with count')
-      }
+    if (count && (sort || paginate)) {
+      throw new Error('Sort/paginate cannot be used with count')
     }
 
     if (sort) {
@@ -42,23 +40,16 @@ export default {
    * Get a specific profile
    */
   get: async (id: number) => {
-    return await db.select('*').from('profiles').where({ id })
-  },
-
-  /**
-   * Update a specific profile
-   */
-  update: async (id: number) => {
-    /* There is actually nothing to update so just resovle */
+    return await db.select('*').from('profiles').where({ id, deleted: false }).then(([profile]) => profile)
   },
 
   /**
    * Delete a specific profile + delete all the accounts for it
    */
   delete: async (id: number) => {
-    await db.transaction(async (t) => {
-      await db.delete().from('accounts').where({ profileId: id })
-      await db.delete().from('profiles').where({ id })
+    return await db.transaction(async (t) => {
+      await db('accounts').where({ profileId: id }).update({ deleted: true })
+      return await db('profiles').where({ id }).update({ deleted: true })
     })
   },
 }

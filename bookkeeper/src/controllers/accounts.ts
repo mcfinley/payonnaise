@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import { HttpError, Paginate, Sort, Filter } from '../libs/utils'
+import Profiles from '../models/profiles'
 import Accounts from '../models/accounts'
 
 export default {
@@ -8,16 +9,20 @@ export default {
    * Create an account POST method implementation
    */
   post: async (req, res) => {
-    const asset = String(req.body.asset)
+    const asset = !!req.body.asset ? String(req.body.asset) : null
     const profileId = Number(req.body.profileId || req.params.profileId)
 
     /* Validate input */
-    if (_.isEmpty(asset) || !_.isFinite(profileId)) {
+    if (asset === null || !_.isFinite(profileId)) {
       throw new HttpError(400, 'Asset or profileId invalid')
     }
 
-    /* Check that user exists */
-    /* TODO */
+    /* Check profile for existance */
+    const profile = await Profiles.get(profileId)
+
+    if (!profile) {
+        throw new HttpError(400, 'Profile does not exist')
+    }
 
     res.json(await Accounts.create({ asset, profileId }))
   },
@@ -36,6 +41,12 @@ export default {
       filter.profileId = req.params.profileId
     }
 
+    if (paginate) {
+      if (!_.isObject(paginate) || !_.isFinite(Number(paginate.page)) || !_.isFinite(Number(paginate.pageSize))) {
+        throw new HttpError(400, 'Invalid pagination')
+      }
+    }
+
     /* Validate the input */
     // if (!_.isObject(paginate) || !_.isObject(sort) || !_.isObject(filter)) {
     //   throw new HttpError(400, 'Paginate, Sort or Filter param invalid')
@@ -50,8 +61,13 @@ export default {
   get: async (req, res) => {
     const accountId = Number(req.params.accountId)
     const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
+    const account = await Accounts.get(_.defined({ id: accountId, profileId: profileId }))
 
-    res.json(await Accounts.get(_.defined({ id: accountId, profileId: profileId })))
+    if (!account) {
+      throw new HttpError(404, 'Account not found')
+    }
+
+    res.json(account)
   },
 
   /**
@@ -64,23 +80,24 @@ export default {
   },
 
   /**
-   * Update specific account entry
-   */
-  update: async (req, res) => {
-    // const patchUpdate = req.method === 'PATCH'
-    // const accountId = Number(req.params.accountId)
-    // const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
-
-    res.sendStatus(404)
-  },
-
-  /**
    * Delete a specific account
    */
   delete: async (req, res) => {
     const accountId = Number(req.params.accountId)
     const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
 
-    res.json(await Accounts.delete(_.defined({ id: accountId, profileId })))
+    if (!_.isFinite(accountId)) {
+      throw new HttpError(400, 'Invalid ID')
+    }
+
+    if (!_.isUndefined(profileId) && !_.isFinite(profileId)) {
+      throw new HttpError(400, 'Invalid profile ID')
+    }
+
+    if (0 === await Accounts.delete(_.defined({ id: accountId, profileId }))) {
+      throw new HttpError(404, 'Account not found')
+    }
+
+    res.sendStatus(200)
   },
 }
