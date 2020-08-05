@@ -15,15 +15,14 @@ const router = express.Router()
 router.post('/profiles/', routeHandler(profiles.post))
 router.get('/profiles/', routeHandler(profiles.list))
 router.get('/profiles/:profileId', routeHandler(profiles.get))
-router.put('/profiles/:profileId', routeHandler(profiles.update))
-router.patch('/profiles/:profileId', routeHandler(profiles.update))
+/* We cannot update a profile there is no fields for it there */
 router.delete('/profiles/:profileId', routeHandler(profiles.delete))
 
 router.post('/profiles/:profileId/accounts', routeHandler(accounts.post))
 router.get('/profiles/:profileId/accounts', routeHandler(accounts.list))
 router.get('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.get))
-router.put('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.update))
-router.patch('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.update))
+router.get('/profiles/:profileId/accounts/:accountId/balance', routeHandler(accounts.getBalance))
+/* No account update */
 router.delete('/profiles/:profileId/accounts/:accountId', routeHandler(accounts.delete))
 
 // router.post('/users/:userId/accounts/:accountId/transfers', routeHandler(accounts.post))
@@ -41,8 +40,7 @@ router.post('/accounts', routeHandler(accounts.post))
 router.get('/accounts', routeHandler(accounts.list))
 router.get('/accounts/:accountId', routeHandler(accounts.get))
 router.get('/accounts/:accountId/balance', routeHandler(accounts.getBalance))
-router.put('/accounts/:accountId', routeHandler(accounts.update))
-router.patch('/accounts/:accountId', routeHandler(accounts.update))
+/* No account update */
 router.delete('/accounts/:accountId', routeHandler(accounts.delete))
 
 // router.post('/accounts/:accountId/transfers', routeHandler(accounts.post))
