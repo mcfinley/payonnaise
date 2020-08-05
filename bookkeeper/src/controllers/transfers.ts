@@ -17,9 +17,6 @@ export default {
       throw new HttpError(400, 'amount, fromAccountId or toAccountId invalid')
     }
 
-    /* Check that user exists */
-    /* TODO */
-
     res.json(await Transfers.create({ amount, fromAccountId, toAccountId }))
   },
 
@@ -37,42 +34,6 @@ export default {
       filter.accountId = req.params.accountId
     }
 
-    /* Validate the input */
-    // if (!_.isObject(paginate) || !_.isObject(sort) || !_.isObject(filter)) {
-    //   throw new HttpError(400, 'Paginate, Sort or Filter param invalid')
-    // }
-
     res.json(await Transfers.list({ paginate, sort, filter, count }))
   },
-  //
-  // /**
-  //  * Get on specific entry
-  //  */
-  // get: async (req, res) => {
-  //   const accountId = Number(req.params.accountId)
-  //   const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
-  //
-  //   res.json(await Accounts.get({ id: accountId, profileId }))
-  // },
-  //
-  // /**
-  //  * Update specific account entry
-  //  */
-  // update: async (req, res) => {
-  //   // const patchUpdate = req.method === 'PATCH'
-  //   // const accountId = Number(req.params.accountId)
-  //   // const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
-  //
-  //   res.sendStatus(404)
-  // },
-  //
-  // /**
-  //  * Delete a specific account
-  //  */
-  // delete: async (req, res) => {
-  //   const accountId = Number(req.params.accountId)
-  //   const profileId = req.params.profileId ? Number(req.params.profileId) : undefined
-  //
-  //   res.json(await Accounts.delete({ id: accountId, profileId }))
-  // },
 }

@@ -48,28 +48,4 @@ export default {
 
     return await query
   },
-
-  /**
-   * Get a specific profile
-   */
-  // get: async (id: number) => {
-  //   return await db.select('*').from('profiles').where({ id })
-  // },
-
-  /**
-   * Update a specific profile
-   */
-  // update: async (id: number) => {
-  //   /* There is actually nothing to update so just resovle */
-  // },
-
-  /**
-   * Delete a specific profile + delete all the accounts for it
-   */
-  // delete: async (id: number) => {
-  //   await db.transaction(async (t) => {
-  //     await db.delete().from('accounts').where({ profileId: id })
-  //     await db.delete().from('profiles').where({ id })
-  //   })
-  // },
 }
