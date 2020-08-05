@@ -4,31 +4,31 @@ Here you can find a description for all the endpoints in bookkeeper service.
 
 ## Profiles
 
-POST `/profiles` - Create a new profile. No additional data is required.
-GET `/profiles` - List all profiles. Sorting, Filtering and Pagination may be passed as query params. Learn more.
-GET `/profiles/:id` - Get a specific profile.
-DELETE `/profiles/:id` - Delete a specific profile
+1. `POST` `/profiles` - Create a new profile. No additional data is required.
+2. `GET` `/profiles` - List all profiles. Sorting, Filtering and Pagination may be passed as query params. Learn more.
+3. `GET` `/profiles/:id` - Get a specific profile.
+4. `DELETE` `/profiles/:id` - Delete a specific profile
 
-POST `/profiles/:id/accounts` - Create a new account for a specific profile. `asset` should be provided in body.
-GET `/profiles/:id/accounts` - List all accounts that belong to a specific profile. Sorting, Filtering and Pagination may be passed as query params. Learn more.
-GET `/profiles/:id/accounts/:id` - Get one specific account that belongs to a specific profile information.
-GET `/profiles/:id/accounts/:id/balance` - Get one specific account that belongs to a specific profile balance.
-GET `/profiles/:id/accounts/:id/transfers` - Get one specific account's transfers.
-DELETE `/profiles/:id/accounts/:id` - Delete a specific account that belongs to a specific profile.
+1. `POST` `/profiles/:id/accounts` - Create a new account for a specific profile. `asset` should be provided in body.
+2. `GET` `/profiles/:id/accounts` - List all accounts that belong to a specific profile. Sorting, Filtering and Pagination may be passed as query params. [Learn more](https://github.com/mcfinley/payonnaise/blob/master/bookkeeper/api.md#sort-filter-paginate)
+3. `GET` `/profiles/:id/accounts/:id` - Get one specific account that belongs to a specific profile information.
+4. `GET` `/profiles/:id/accounts/:id/balance` - Get one specific account that belongs to a specific profile balance.
+5. `GET` `/profiles/:id/accounts/:id/transfers` - Get one specific account's transfers.
+6. `DELETE` `/profiles/:id/accounts/:id` - Delete a specific account that belongs to a specific profile.
 
 ## Accounts
 
-POST `/accounts` - Create a new account. `asset` and `profileId` should be provided in body.
-GET `/accounts` - List all accounts. Sorting, Filtering and Pagination may be passed as query params. Learn more.
-GET `/accounts/:id` - Get one specific account information.
-GET `/accounts/:id/balance` - Get one specific account balance.
-GET `/accounts/:id/transfers` - Get transfers for an account
-DELETE `/accounts/:id` - Delete a specific account.
+1. `POST` `/accounts` - Create a new account. `asset` and `profileId` should be provided in body.
+2. `GET` `/accounts` - List all accounts. Sorting, Filtering and Pagination may be passed as query params. [Learn more](https://github.com/mcfinley/payonnaise/blob/master/bookkeeper/api.md#sort-filter-paginate)
+3. `GET` `/accounts/:id` - Get one specific account information.
+4. `GET` `/accounts/:id/balance` - Get one specific account balance.
+5. `GET` `/accounts/:id/transfers` - Get transfers for an account
+6. `DELETE` `/accounts/:id` - Delete a specific account.
 
 ## Transfers
 
-POST `/transfers` - Create a new transfer. `fromAccountId`, `toAccountId` and `amount` should be provided in body.
-GET `/transfers` - List all transfers. Sorting, Filtering and Pagination may be passed as query params. Learn more.
+1. `POST` `/transfers` - Create a new transfer. `fromAccountId`, `toAccountId` and `amount` should be provided in body.
+2. `GET` `/transfers` - List all transfers. Sorting, Filtering and Pagination may be passed as query params. [Learn more](https://github.com/mcfinley/payonnaise/blob/master/bookkeeper/api.md#sort-filter-paginate)
 
 ## Sort, Filter, Paginate
 
