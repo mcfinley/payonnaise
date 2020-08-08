@@ -15,3 +15,7 @@ This one manages users accounts and it's balances.
 ### 🤠 Merchant Service
 
 This one stores all the trades and closes them when possible updating user's balances in bookkeeper service.
+
+### 🧞 Genie Service
+
+This one helps others to treat distributed systems transactions by doing locks and stuff.
