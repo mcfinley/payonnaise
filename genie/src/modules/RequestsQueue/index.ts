@@ -1,4 +1,6 @@
 import storage from '../../libs/storage'
+import { stringify, parse } from '../../libs/utils'
+import { Lock } from '../LocksManager'
 
 /**
  * Lock Request type
@@ -6,7 +8,7 @@ import storage from '../../libs/storage'
 export type LockRequest = {
   id: string
   transactionName?: string
-  resources: string[]
+  locks: Omit<Lock, 'id'>[]
   queueTimeout?: number
   transactionTimeout?: number
   priority?: number
@@ -17,21 +19,21 @@ export type LockRequest = {
  * supports "search" for a specific request with removal
  */
 export default class RequestsQueue {
-  private QUEUE_NAME = `requests-queueue`
+  private QUEUE_NAME = `requests-queueue-genie`
 
   /* Add an item to the end of the queue */
   push = async (request: LockRequest) => {
-    await storage.rpush(this.QUEUE_NAME, JSON.stringify(request))
+    await storage.rpush(this.QUEUE_NAME, await stringify(request))
   }
 
   /* Add an item to the top of the queue */
   unshift = async (request: LockRequest) => {
-    await storage.lpush(this.QUEUE_NAME, JSON.stringify(request))
+    await storage.lpush(this.QUEUE_NAME, await stringify(request))
   }
 
   /* Take the first item from queue */
   shift = async (): Promise<LockRequest | null> => {
-    return JSON.parse(await storage.lpop(this.QUEUE_NAME) || 'null')
+    return await parse(await storage.lpop(this.QUEUE_NAME) ?? 'null')
   }
 
   /**

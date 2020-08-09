@@ -70,15 +70,3 @@ describe('Search RequestsQueue module tests', () => {
   })
 })
 
-
-  // it('support search', async () => {
-  //   while (await queue.shift()) {
-  //
-  //   }
-  //
-  //   await queue.push('test-0')
-  //   await queue.push('test-1')
-  //   const item =
-  //
-  //   expect(item).toBe('test-0')
-  // })
