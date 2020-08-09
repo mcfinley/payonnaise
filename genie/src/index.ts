@@ -2,14 +2,9 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-import Server from './server'
+import LocksManager from './modules/LocksManager'
+import RequestsQueue from './modules/RequestsQueue'
 
-const server = new Server({
-  port: Number(process.env.GENIE_PORT)
-})
+const locksManager = new LocksManager()
+const requestsQueue = new RequestsQueue()
 
-server.onMessage.subscribe(({ id, data }) => {
-  const { command, payload } = JSON.parse(data)
-
-  // conso
-})

@@ -4,6 +4,7 @@ import storage from '../../libs/storage'
  * Lock Request type
  */
 export type LockRequest = {
+  id: string
   transactionName?: string
   resources: string[]
   queueTimeout?: number
@@ -36,7 +37,7 @@ export default class RequestsQueue {
   /**
    * An iterator for reqeusts to find that one first that is executable
    */
-  find = async (predicate: (item: LockRequest) => boolean) => {
+  find = async (predicate: (item: LockRequest) => Promise<boolean>) => {
     let item: LockRequest | null = null
     let predicateSucceeded: boolean = false
     let poppedItems: LockRequest[] = []
@@ -48,7 +49,7 @@ export default class RequestsQueue {
         break
       }
 
-      predicateSucceeded = predicate(item)
+      predicateSucceeded = await predicate(item)
 
       if (!predicateSucceeded) {
         poppedItems.push(item)

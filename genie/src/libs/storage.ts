@@ -10,13 +10,12 @@ client.on('error', (error) => {
   logger.error(error)
 })
 
-
 export default {
   /**
    * Basic get and set operations
    */
-  get: <E = Error>(key: string) => new Promise<string>((resolve, reject) =>
-    client.get(key, (error: E, data: string) => error ? reject(error) : resolve(data))
+  get: <E = Error>(key: string) => new Promise<string | null>((resolve, reject) =>
+    client.get(key, (error: E, data: string) => error ? reject(error) : resolve(data ?? null))
   ),
 
   set: <E = Error>(key: string, data: string) => new Promise<void>((resolve, reject) =>
@@ -32,10 +31,10 @@ export default {
   rpush: <E = Error>(name: string, data: string) => new Promise<void>((resolve, reject) =>
     client.rpush(name, data, (error: E) => error ? reject(error) : resolve())
   ),
-  lpop: <E = Error>(name: string) => new Promise<string>((resolve, reject) =>
+  lpop: <E = Error>(name: string) => new Promise<string | null>((resolve, reject) =>
     client.lpop(name, (error: E, data: string) => error ? reject(error) : resolve(data))
   ),
-  rpop: <E = Error>(name: string) => new Promise<string>((resolve, reject) =>
+  rpop: <E = Error>(name: string) => new Promise<string | null>((resolve, reject) =>
     client.rpop(name, (error: E, data: string) => error ? reject(error) : resolve(data))
   ),
 }

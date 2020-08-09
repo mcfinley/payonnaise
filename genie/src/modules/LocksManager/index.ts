@@ -1,36 +1,80 @@
+import _ from 'lodash'
+import { v4 as uuid } from 'uuid'
+
 import storage from '../../libs/storage'
+import { parse, stringify } from '../../libs/utils'
 
 /**
  * Typings for this module
  */
-type LockType = 'exclusive' | 'shared'
+export type LockType = 'exclusive' | 'shared'
+export type Lock = { id: string, name: string, type: LockType }
+export type LockConfig = { id: string, type: LockType }
 
 /**
- * Locks manager module. Used to check and acquire locks. Is not designed
- * to work in horizontally scalable manner.
+ * Locks manager module. Used to check and acquire locks.
  */
 export default class LocksManager {
-  /**
-   * Checks the resource for being locked
-   */
-  check = async (resource: string, type: LockType) => {
-    const data = await storage.get(`locks-${resource}`)
+  private get = async (name: string) =>
+    await parse(await storage.get(`locks-${name}`) ?? '[]') as LockConfig[]
 
-    if (data === 'exclusive') {
+  private set = async (name: string, config: LockConfig[]) =>
+    await storage.set(`locks-${name}`, await stringify(config))
+
+  private activeLocks = new Map<string, string>()
+
+  /**
+   * Checks whether the lock is executable ()
+   */
+  check = async (lock: Omit<Lock, 'id'>) => {
+    const config = await this.get(lock.name)
+
+    if (config.length > 0 && config[0].type === 'exclusive') {
       return false
     }
 
-    if (type === 'exclusive') {
-      return data === null
+    if (lock.type === 'exclusive') {
+      return config.length === 0
     }
 
     return true
   }
 
   /**
-   * Acquire lock (if it's not acquired already)
+   * Acquire lock
    */
-  acquire = async (resource: string, type: LockType) => {
-    await storage.set(`locks-${resource}`, type)
+  acquire = async (lock: Omit<Lock, 'id'>) => {
+    if (!await this.check(lock)) {
+      throw new Error('This lock cannot be acquired now.')
+    }
+
+    const config = await this.get(lock.name)
+    const id = uuid()
+
+    await this.set(lock.name, config.concat({ id, type: lock.type }))
+    this.activeLocks.set(id, lock.name)
+
+    return id
+  }
+
+  /**
+   * Release lock
+   */
+  release = async (id: string) => {
+    const lockName = this.activeLocks.get(id)
+
+    if (!lockName) {
+      throw new Error(`Lock ${id} is not acquired.`)
+    }
+
+    const config = await this.get(lockName)
+    const lockConfig = _.find(config, (item) => item.id === id)
+
+    if (lockConfig === null) {
+      throw new Error(`Lock ${id} is not acquired.`)
+    }
+
+    await this.set(lockName, config.filter((item) => item.id !== id))
+    this.activeLocks.delete(id)
   }
 }

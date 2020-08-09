@@ -8,13 +8,7 @@ Genie has a TCP interface on GENIE_HOST:GENIE_PORT, all the services talk throug
 
 ## Locks
 
-Every lock can be either `shared` or `exclusive`. Shared locks can take effect together, while no other lock may happen with `exclusive` lock taking space. Every lock has a name of the resource that it requests access to (e.g. `accounts/2` meaning that account with ID 2 should be locked) and may have a predicate (a function with parameters) that defines lock behavior (e.g. `accounts:every(3)` meaning that every third account is now locked).
-
-List of possible predicates:
-
-1. `every(N: number)` - to lock every Nth entity e.g. `accounts:every(3)`
-
-(to be continued)
+Every lock can be either `shared` or `exclusive`. Shared locks can take effect together, while no other lock may happen with `exclusive` lock taking space. Every lock has a name of the resource that it requests access to (e.g. `accounts/2` meaning that account with ID 2 should be locked).
 
 ## Commands
 
@@ -84,3 +78,11 @@ The queue manager is generally simple, it works by following this algorithm (sta
 ## API
 
 .. to be written ..
+
+## Redis
+
+Genie uses redis to store locks. The connection properties are being passed via GENIE_REDIS_HOST and GENIE_REDIS_PORT envs.
+
+## Deployment
+
+Genie is not designed to horizontally scale, but it's on the radar for future updates.

@@ -1,19 +1,15 @@
 import * as net from 'net'
 import { v4 as uuid } from 'uuid'
-import { EventEmitter } from './libs/events'
+import { EventEmitter } from '../../libs/events'
 
-type Options = {
-  port: number
-}
-
-export default class Server {
+export default class TcpServer {
   server = net.createServer()
   clients = new Map<string, net.Socket>()
 
   onMessage = new EventEmitter<{ id: string, data: string }>()
 
-  constructor (private options: Options) {
-    this.server.listen(this.options.port)
+  constructor () {
+    this.server.listen(process.env.GENIE_PORT)
     this.server.on('connection', this.handleNewConnection)
   }
 
