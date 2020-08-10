@@ -1,38 +1,54 @@
 import * as net from 'net'
 import { v4 as uuid } from 'uuid'
 import { EventEmitter } from '../../libs/events'
+import { parse, stringify } from '../../libs/utils'
 
+export type Message<T = any> = { command: string, payload?: T }
+
+/**
+ * This module creates a TCP server to accept JSON commands and send out JSON responses
+ */
 export default class TcpServer {
-  server = net.createServer()
-  clients = new Map<string, net.Socket>()
+  private server = net.createServer()
+  private clients = new Map<string, net.Socket>()
 
-  onMessage = new EventEmitter<{ id: string, data: string }>()
+  public onMessage = new EventEmitter<{ id: string, message: Message}>()
 
   constructor () {
     this.server.listen(process.env.GENIE_PORT)
     this.server.on('connection', this.handleNewConnection)
   }
 
-  handleNewConnection = (socket) => {
+  private handleNewConnection = (socket: net.Socket) => {
     const id = uuid()
 
     this.clients.set(id, socket)
-    socket.on('data', (chunk) => this.handleSocketMessage(id, chunk))
+    socket.on('data', (data) => this.handleSocketMessage(id, data))
     socket.on('end', () => this.clients.delete(id))
   }
 
-  handleSocketMessage = (id: string, data: string) => {
-    this.onMessage.emitParallelAsync({ id, data })
+  private handleSocketMessage = async (id: string, data: Buffer) => {
+    this.onMessage.emitSync({
+      id, message: await parse(data.toString() || 'null').catch((err) => null) as Message
+    })
   }
 
-  sendMessage = (id: string, data: string) => {
+  /**
+   * Public interface
+   */
+
+  public sendMessage = async (id: string, message: Message) => {
     const socket = this.clients.get(id)
 
     if (!socket) {
       throw new Error(`Socket with ${id} is not connected`)
     }
 
-    socket.write(data)
+    const data = await stringify(message)
+
+    await new Promise((resolve, reject) =>
+      socket.write(data, (err) => err ? reject(err) : resolve())
+    )
   }
 }
 

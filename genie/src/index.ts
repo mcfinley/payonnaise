@@ -4,12 +4,16 @@ dotenv.config()
 
 import LocksManager from './modules/LocksManager'
 import RequestsQueue from './modules/RequestsQueue'
+import TcpServer from './modules/TcpServer'
 
 import GenieCore from './modules/GenieCore'
 
 const locksManager = new LocksManager()
 const requestsQueue = new RequestsQueue()
 const core = new GenieCore(locksManager, requestsQueue)
+
+const server = new TcpServer()
+
 
 // ;(async () => {
 //   core.onAcquired.subscribe((id) => {
