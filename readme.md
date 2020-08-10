@@ -1,12 +1,18 @@
 # Payonnaise
 
-Hey everyone 👋. This is an "experience buster" project I've making by my own. It's not supposed to be a real life working piece of software (at least yet).
+Hey everyone 👋. Welcome to my cemetary of side projects, this is the coolest one.
 
-This is a "classic" payments/orders platform that allows you to deposit your money to the platform, transfer or trade them and withdraw. One little not is that this platform does not have "locked" list of supported assets (e.g. only cryptocurrencies and fiats), but it allows you to create a *Provider* for any kind of asset you want (e.g. game items, financial instruments, coupons etc). This way anybody can create any asset they want and this asset's transfer and orders will be managed by the platform.
+## Description
+
+This is supposed to be a "classic" payments/orders platform that allows you to deposit your money, transfer or trade them and withdraw. Exactly like that. With one little exception, that
+
+> the assets list is not locked. anyone can create their own assets and the platform will manage them 
+
+This means that, registered as a provider, you'll add the ability for platform users to deposits assets you came up with (Crypto Currencies, Game stuff, Financial instruments etc.). Users will be able to create accounts with that asset and start transfering / trading. And it's up to provider to manage deposits and withdrawals.
 
 ## Architecture
 
-This platform consists of microservices.
+This platform consists of few microservices running with docker.
 
 ### 🤓 Bookkeeper Service
 
