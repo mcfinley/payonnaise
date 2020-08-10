@@ -1,8 +1,11 @@
+import logger from '../../libs/logger'
+
 import GenieCore from '../GenieCore'
 import TcpServer, { Message } from '../TcpServer'
 
 /**
- *
+ * Core connector module handles TCP server messages and Genie Core interface
+ * to compose them into one
  */
 export default class CoreConnector {
   private requestsRelationships = new Map<string, string>() // request id -> client id
@@ -17,31 +20,43 @@ export default class CoreConnector {
    * Message handling code
    */
   private handleMessage = async ({ id, message: { command, payload } }: { id: string, message: Message }) => {
-    switch (command) {
-      case 'request':
-        const requestId = await this.core.enqeue(payload)
-        await this.server.sendMessage(id, { command: 'queued', payload: requestId })
-        this.requestsRelationships.set(requestId, id)
+    logger.info('incoming command', { id, command, payload })
+    try {
+      switch (command) {
+        case 'request':
+          const requestId = await this.core.enqeue(payload)
+          await this.server.sendMessage(id, { command: 'queued', payload: requestId })
+          this.requestsRelationships.set(requestId, id)
 
-        break
-      case 'release':
-        this.core.release(payload)
-        break
-      default:
-        this.server.sendMessage(id, { command: 'error', payload: `Command ${command} is not supported` })
+          break
+        case 'release':
+          this.core.release(payload)
+          break
+        default:
+          this.server.sendMessage(id, { command: 'error', payload: `Command ${command} is not supported` })
+      }
+    } catch (e) {
+      logger.error('There was an error while CoreConnector was processing command', { id, command, payload, e })
     }
   }
 
   private handleAcquired = async (id: string) => {
-    const clientId = this.requestsRelationships.get(id)
+    try {
+      const clientId = this.requestsRelationships.get(id)
 
-    if (clientId) {
-      this.server.sendMessage(clientId, { command: 'acquired', payload: id })
+      this.server.sendMessage(clientId as string, { command: 'acquired', payload: { id } })
+    } catch (e) {
+      logger.error('Failed at handleAcquired', { e })
     }
-
   }
 
   private handleReleased = async (id: string) => {
+    try {
+      const clientId = this.requestsRelationships.get(id)
 
+      this.server.sendMessage(clientId as string, { command: 'released', payload: { id } })
+    } catch (e) {
+      logger.error('Failed at handleReleased', { e })
+    }
   }
 }

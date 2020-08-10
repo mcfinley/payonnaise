@@ -24,7 +24,7 @@ export default class LocksManager {
   private activeLocks = new Map<string, string>()
 
   /**
-   * Checks whether the lock is executable ()
+   * Checks whether the lock is executable. Can throw
    */
   check = async (lock: Omit<Lock, 'id'>) => {
     const config = await this.get(lock.name)
@@ -41,7 +41,7 @@ export default class LocksManager {
   }
 
   /**
-   * Acquire lock
+   * Acquire lock (can throw)
    */
   acquire = async (lock: Omit<Lock, 'id'>) => {
     if (!await this.check(lock)) {
@@ -58,7 +58,7 @@ export default class LocksManager {
   }
 
   /**
-   * Release lock
+   * Release lock (can throw)
    */
   release = async (id: string) => {
     const lockName = this.activeLocks.get(id)

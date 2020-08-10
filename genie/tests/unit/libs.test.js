@@ -2,7 +2,7 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-const storage = require('../dist/libs/storage')
+const storage = require('../../dist/libs/storage')
 
 describe('Storage (Genie Redis) API library tests', () => {
   it('should set kv', async () => {

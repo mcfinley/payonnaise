@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid'
 import { EventEmitter } from '../../libs/events'
+import logger from '../../libs/logger'
 
 import LocksManager, { LockType } from '../LocksManager'
 import RequestsQueue, { LockRequest } from '../RequestsQueue'
@@ -23,21 +24,25 @@ export default class GenieCore {
    * Process the queue
    */
   dispatch = async () => {
-    const acquirableRequest = await this.requestsQueue.find(async (request) => (
-      (
-        await Promise.all(request.locks.map(async (lock) => (
-          await this.locksManager.check(lock)
-        )))
-      ).reduce((result, acquirable) => result && acquirable, true)
-    ))
+    try {
+      const acquirableRequest = await this.requestsQueue.find(async (request) => (
+        (
+          await Promise.all(request.locks.map(async (lock) => (
+            await this.locksManager.check(lock)
+          )))
+        ).reduce((result, acquirable) => result && acquirable, true)
+      ))
 
-    if (acquirableRequest !== null) {
-      const acquiredLocks = await Promise.all(acquirableRequest.locks.map(async (lock) => {
-        return await this.locksManager.acquire(lock)
-      }))
+      if (acquirableRequest !== null) {
+        const acquiredLocks = await Promise.all(acquirableRequest.locks.map(async (lock) => {
+          return await this.locksManager.acquire(lock)
+        }))
 
-      this.acquiredLocks.set(acquirableRequest.id, acquiredLocks)
-      this.onAcquired.emitSync(acquirableRequest.id)
+        this.acquiredLocks.set(acquirableRequest.id, acquiredLocks)
+        this.onAcquired.emitSync(acquirableRequest.id)
+      }
+    } catch (e) {
+      logger.error('There was an error while Genie Core was dispatching queue requests', { e })
     }
 
     this.dispatchSubject.emitAsync()

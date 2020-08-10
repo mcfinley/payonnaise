@@ -2,7 +2,7 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-const { default: RequestsQueue } = require('../dist/modules/RequestsQueue')
+const { default: RequestsQueue } = require('../../dist/modules/RequestsQueue')
 
 describe('Basic RequestsQueue module tests', () => {
   let queue

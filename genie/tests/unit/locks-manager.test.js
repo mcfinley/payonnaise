@@ -2,7 +2,7 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-const { default: LocksManager } = require('../dist/modules/LocksManager')
+const { default: LocksManager } = require('../../dist/modules/LocksManager')
 
 describe('Basic RequestsQueue module tests', () => {
   let manager = null

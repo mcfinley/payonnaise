@@ -1,5 +1,6 @@
 import * as net from 'net'
 import { v4 as uuid } from 'uuid'
+import logger from '../../libs/logger'
 import { EventEmitter } from '../../libs/events'
 import { parse, stringify } from '../../libs/utils'
 
@@ -17,6 +18,7 @@ export default class TcpServer {
   constructor () {
     this.server.listen(process.env.GENIE_PORT)
     this.server.on('connection', this.handleNewConnection)
+    this.server.on('error', this.handleError)
   }
 
   private handleNewConnection = (socket: net.Socket) => {
@@ -33,10 +35,14 @@ export default class TcpServer {
     })
   }
 
-  /**
-   * Public interface
-   */
+  private handleError = async (e: any) => {
+    logger.error('There was an error while running TCP server', { e })
+    throw new Error(e)
+  }
 
+  /**
+   * Public interface - send a message to specific client. Can throw
+   */
   public sendMessage = async (id: string, message: Message) => {
     const socket = this.clients.get(id)
 
