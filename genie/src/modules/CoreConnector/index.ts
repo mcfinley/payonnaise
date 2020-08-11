@@ -25,9 +25,8 @@ export default class CoreConnector {
       switch (command) {
         case 'request':
           const requestId = await this.core.enqeue(payload)
-          await this.server.sendMessage(id, { command: 'queued', payload: requestId })
           this.requestsRelationships.set(requestId, id)
-
+          await this.server.sendMessage(id, { command: 'queued', payload: requestId })
           break
         case 'release':
           this.core.release(payload)

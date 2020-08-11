@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { v4 as uuid } from 'uuid'
 
+import logger from '../../libs/logger'
 import storage from '../../libs/storage'
 import { parse, stringify } from '../../libs/utils'
 
@@ -29,6 +30,8 @@ export default class LocksManager {
   check = async (lock: Omit<Lock, 'id'>) => {
     const config = await this.get(lock.name)
 
+    logger.info({ lock, config }, 'checking lock')
+
     if (config.length > 0 && config[0].type === 'exclusive') {
       return false
     }
@@ -47,6 +50,8 @@ export default class LocksManager {
     if (!await this.check(lock)) {
       throw new Error('This lock cannot be acquired now.')
     }
+
+    logger.info({ lock }, 'acquiring lock')
 
     const config = await this.get(lock.name)
     const id = uuid()
@@ -69,6 +74,8 @@ export default class LocksManager {
 
     const config = await this.get(lockName)
     const lockConfig = _.find(config, (item) => item.id === id)
+
+    logger.info({ id, lockConfig }, 'releasing lock')
 
     if (lockConfig === null) {
       throw new Error(`Lock ${id} is not acquired.`)

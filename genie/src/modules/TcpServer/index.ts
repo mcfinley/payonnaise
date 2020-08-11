@@ -16,7 +16,10 @@ export default class TcpServer {
   public onMessage = new EventEmitter<{ id: string, message: Message}>()
 
   constructor () {
-    this.server.listen(process.env.GENIE_PORT)
+    if (process.env.NODE_ENV !== 'test') {
+      this.server.listen(process.env.GENIE_PORT)
+    }
+
     this.server.on('connection', this.handleNewConnection)
     this.server.on('error', this.handleError)
   }

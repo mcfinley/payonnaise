@@ -34,6 +34,7 @@ export default class GenieCore {
       ))
 
       if (acquirableRequest !== null) {
+        logger.info('Acquiring a request', acquirableRequest)
         const acquiredLocks = await Promise.all(acquirableRequest.locks.map(async (lock) => {
           return await this.locksManager.acquire(lock)
         }))
@@ -45,7 +46,10 @@ export default class GenieCore {
       logger.error('There was an error while Genie Core was dispatching queue requests', { e })
     }
 
-    this.dispatchSubject.emitAsync()
+    setTimeout(() => {
+      this.dispatchSubject.emitAsync()
+    }, 3000)
+
   }
 
   /**
@@ -76,6 +80,8 @@ export default class GenieCore {
     if (!acquiredLocks) {
       throw new Error(`Request with id ${id} is not active`)
     }
+
+    logger.info('Releasing a request', id, acquiredLocks)
 
     await Promise.all(acquiredLocks.map(async (id) =>
       await this.locksManager.release(id)

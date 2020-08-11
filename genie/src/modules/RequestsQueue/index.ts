@@ -1,4 +1,5 @@
 import storage from '../../libs/storage'
+import logger from '../../libs/logger'
 import { stringify, parse } from '../../libs/utils'
 import { Lock } from '../LocksManager'
 
@@ -23,17 +24,21 @@ export default class RequestsQueue {
 
   /* Add an item to the end of the queue */
   push = async (request: LockRequest) => {
+    logger.info('Pushing (rpush) the from to the queue', request)
     await storage.rpush(this.QUEUE_NAME, await stringify(request))
   }
 
   /* Add an item to the top of the queue */
   unshift = async (request: LockRequest) => {
+    logger.info('Unshifting (lpush) the from to the queue', request)
     await storage.lpush(this.QUEUE_NAME, await stringify(request))
   }
 
   /* Take the first item from queue */
   shift = async (): Promise<LockRequest | null> => {
-    return await parse(await storage.lpop(this.QUEUE_NAME) ?? 'null')
+    const item = await parse(await storage.lpop(this.QUEUE_NAME) ?? 'null') as LockRequest | null
+    logger.info('Shifting (lpop) the item from the queue', item)
+    return item
   }
 
   /**
@@ -59,9 +64,9 @@ export default class RequestsQueue {
     }
 
     /* Insert popped items back */
-    poppedItems.reverse().forEach(($item) => {
-      this.unshift($item)
-    })
+    await Promise.all(poppedItems.reverse().map(async ($item) => {
+      await this.unshift($item)
+    }))
 
     return item
   }
