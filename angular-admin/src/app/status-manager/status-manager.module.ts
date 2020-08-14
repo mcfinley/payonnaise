@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { StatusManagerRoutingModule } from './status-manager-routing.module';
 import { MainPageComponent } from './main-page/main-page.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { MainPageComponent } from './main-page/main-page.component';
   ],
   imports: [
     CommonModule,
-    StatusManagerRoutingModule
+    StatusManagerRoutingModule,
+    SharedModule,
   ]
 })
 export class StatusManagerModule { }

@@ -1,5 +1,5 @@
 <div class="app">
-  <div class="app__loader" *ngIf="loading">
+  <div class="app__loader" [ngClass]="{ visible: loading }">
     <div class="loader"></div>
   </div>
 

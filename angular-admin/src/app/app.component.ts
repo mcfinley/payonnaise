@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { trigger, state, style } from '@angular/animations'
 
@@ -17,10 +17,12 @@ import { trigger, state, style } from '@angular/animations'
     ])
   ],
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   loading = false;
 
-  constructor(private router: Router) {
+  constructor (private router: Router) {}
+
+  ngAfterViewInit() {
     this.router.events.subscribe((event: Event) => {
       switch (true) {
         case event instanceof NavigationStart: {
