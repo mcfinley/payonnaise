@@ -1,4 +1,4 @@
-# Payonnaise
+# Payon
 
 Hey everyone 👋. Welcome to my cemetary of side projects, this is the coolest one.
 
